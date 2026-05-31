@@ -90,36 +90,61 @@ fun NewsAppMainScreen(viewModel: NewsViewModel) {
                 Scaffold(
                     bottomBar = {
                         NavigationBar(
-                            modifier = Modifier.navigationBarsPadding(),
-                            containerColor = MaterialTheme.colorScheme.surface,
+                            modifier = Modifier
+                                .navigationBarsPadding()
+                                .border(width = 0.5.dp, color = Color.White.copy(alpha = 0.08f), shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                            containerColor = Color(0xFF0F0F0F), // Sleek Sophisticated Dark footer (#0F0F0F)
                             tonalElevation = 8.dp
                         ) {
+                            val navColors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary, // Brand Red
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                unselectedIconColor = Color.White.copy(alpha = 0.5f),
+                                unselectedTextColor = Color.White.copy(alpha = 0.5f),
+                                indicatorColor = Color.Transparent // Clean, flush look that mimics HTML active state
+                            )
                             NavigationBarItem(
                                 icon = { Icon(Icons.Filled.Home, contentDescription = "Feed") },
-                                label = { Text("Feed", style = MaterialTheme.typography.labelSmall) },
+                                label = { Text("Feed", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Medium) },
                                 selected = currentTab == "Feed",
                                 onClick = { currentTab = "Feed" },
+                                colors = navColors,
                                 modifier = Modifier.testTag("nav_feed")
                             )
                             NavigationBarItem(
                                 icon = { Icon(Icons.Filled.Notifications, contentDescription = "Alerts") },
-                                label = { Text("Alerts", style = MaterialTheme.typography.labelSmall) },
+                                label = { Text("Alerts", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Medium) },
                                 selected = currentTab == "Alerts",
                                 onClick = { currentTab = "Alerts" },
+                                colors = navColors,
                                 modifier = Modifier.testTag("nav_alerts")
                             )
                             NavigationBarItem(
                                 icon = { Icon(Icons.Filled.Favorite, contentDescription = "Bookmarks") },
-                                label = { Text("Saved", style = MaterialTheme.typography.labelSmall) },
+                                label = { Text("Saved", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Medium) },
                                 selected = currentTab == "Saved",
                                 onClick = { currentTab = "Saved" },
+                                colors = navColors,
                                 modifier = Modifier.testTag("nav_saved")
                             )
                             NavigationBarItem(
-                                icon = { Icon(Icons.Filled.Person, contentDescription = "Admin") },
-                                label = { Text("Admin", style = MaterialTheme.typography.labelSmall) },
+                                icon = { 
+                                    Box {
+                                        Icon(Icons.Filled.Person, contentDescription = "Admin")
+                                        // A small elegant red dot over admin just like in the HTML design dashboard mockup
+                                        Box(
+                                            modifier = Modifier
+                                                .size(6.dp)
+                                                .background(MaterialTheme.colorScheme.primary, CircleShape)
+                                                .align(Alignment.TopEnd)
+                                                .offset(x = 1.dp, y = (-1).dp)
+                                        )
+                                    }
+                                },
+                                label = { Text("Admin", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Medium) },
                                 selected = currentTab == "Admin",
                                 onClick = { currentTab = "Admin" },
+                                colors = navColors,
                                 modifier = Modifier.testTag("nav_admin")
                             )
                         }
@@ -384,47 +409,48 @@ fun FeedScreen(viewModel: NewsViewModel) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.background) // Seamless, transparent-to-bg blend
                 .statusBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // BBC-style structured red brand block
+                // Editorial brand block
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier
-                            .background(MaterialTheme.colorScheme.primary)
-                            .padding(6.dp)
+                            .background(Color(0xFFD32F2F), RoundedCornerShape(6.dp))
+                            .padding(horizontal = 8.dp, vertical = 6.dp)
                     ) {
-                        Text(
-                            "GNP",
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Black,
-                            letterSpacing = 1.sp
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "GNP Emblem",
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp)
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = "Global News Pro",
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontFamily = FontFamily.Serif
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Serif,
+                        color = Color.White,
+                        letterSpacing = (-0.5).sp
                     )
                 }
 
                 Badge(
-                    containerColor = SuccessGreen,
+                    containerColor = Color(0xFFD32F2F), // Use matching Sophisticated Brand Red
                     modifier = Modifier.padding(4.dp)
                 ) {
                     Text(
-                        "AD-FREE",
+                        "PRO LIVE",
                         style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Black,
                         color = Color.White,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                     )
@@ -432,38 +458,31 @@ fun FeedScreen(viewModel: NewsViewModel) {
             }
         }
 
-        // Sliding category row
+        // Sliding category row - borderless, floating directly on deep dark background
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-                .padding(vertical = 8.dp, horizontal = 12.dp),
+                .background(MaterialTheme.colorScheme.background)
+                .padding(bottom = 12.dp, top = 2.dp, start = 16.dp, end = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(categories) { category ->
                 val isSelected = viewModel.selectedCategory == category
-                val isPreferred = preferences.find { it.category == category }?.isSelected ?: true
                 
-                FilterChip(
-                    selected = isSelected,
-                    onClick = { viewModel.selectCategory(category) },
-                    label = { 
-                        Text(
-                            text = category,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        )
-                    },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = Color.White
-                    ),
-                    border = FilterChipDefaults.filterChipBorder(
-                        borderColor = if (isPreferred) MaterialTheme.colorScheme.primary.copy(alpha = 0.4f) else Color.Transparent,
-                        enabled = true,
-                        selected = isSelected
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(50.dp))
+                        .background(if (isSelected) Color.White else Color.White.copy(alpha = 0.1f))
+                        .clickable { viewModel.selectCategory(category) }
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = category,
+                        color = if (isSelected) Color.Black else Color.White.copy(alpha = 0.8f),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
                     )
-                )
+                }
             }
         }
 
@@ -516,11 +535,6 @@ fun FeedScreen(viewModel: NewsViewModel) {
                 val regularFeed = if (breakingNews != null) filteredArticles.filter { it.id != breakingNews.id } else filteredArticles
                 items(regularFeed) { article ->
                     FeedNewsItemRow(article = article, onClick = { viewModel.setArticle(it) })
-                    Divider(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        thickness = 1.dp,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
                 }
             }
         }
@@ -535,120 +549,138 @@ fun BreakingNewsHeroCard(article: NewsArticle, onClick: (NewsArticle) -> Unit) {
             .padding(16.dp)
             .clickable { onClick(article) }
             .testTag("breaking_hero"),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        shape = RoundedCornerShape(24.dp), // Styled after tailwind's rounded-3xl
+        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF0F0F0F))
     ) {
-        Column {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                if (article.imageUrl != null) {
-                    AsyncImage(
-                        model = article.imageUrl,
-                        contentDescription = article.title,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(220.dp),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .background(
-                                Brush.verticalGradient(
-                                    colors = listOf(Color(0xFFE2B93C), Color(0xFFC8102E))
-                                )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1.6f) // Exact 16/10 aspect ratio from HTML mockup
+        ) {
+            // Background Image or fallback gradient
+            if (article.imageUrl != null) {
+                AsyncImage(
+                    model = article.imageUrl,
+                    contentDescription = article.title,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(Color(0xFFE2B93C), Color(0xFFD32F2F))
                             )
-                    )
-                }
-                
-                // Breaking news banner tag overlaid
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(12.dp)
-                        .background(AlertPulseRed, RoundedCornerShape(4.dp))
-                        .padding(horizontal = 10.dp, vertical = 6.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(6.dp)
-                                .background(Color.White, CircleShape)
                         )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            "BREAKING NEWS",
-                            color = Color.White,
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 0.5.sp
-                        )
-                    }
-                }
-
-                // Category badge overlay
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(12.dp)
-                        .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.85f), RoundedCornerShape(4.dp))
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                ) {
-                    Text(
-                        article.category.uppercase(),
-                        color = Color.White,
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                )
             }
 
-            Column(modifier = Modifier.padding(16.dp)) {
+            // Dark premium gradient scrim to ensure extreme text readability on images
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.1f),
+                                Color.Black.copy(alpha = 0.4f),
+                                Color.Black.copy(alpha = 0.95f)
+                            )
+                        )
+                    )
+            )
+
+            // LIVE UPDATE Badge (Top-Left)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp)
+                    .background(Color(0xFFD32F2F), RoundedCornerShape(50.dp))
+                    .padding(horizontal = 10.dp, vertical = 5.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.PlayArrow,
+                    contentDescription = "Live Update icon",
+                    tint = Color.White,
+                    modifier = Modifier.size(12.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    "LIVE UPDATE",
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 10.sp,
+                    letterSpacing = 1.sp
+                )
+            }
+
+            // Category tag (Top-Right)
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+                    .background(Color.White.copy(alpha = 0.15f), RoundedCornerShape(50.dp))
+                    .padding(horizontal = 10.dp, vertical = 5.dp)
+            ) {
+                Text(
+                    article.category.uppercase(),
+                    color = Color.White.copy(alpha = 0.9f),
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 10.sp,
+                )
+            }
+
+            // Editorial headlines & publisher metadata (Bottom Overlay)
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "BREAKING REPORT",
+                    color = Color(0xFFD32F2F),
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 1.5.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = article.title,
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    fontFamily = FontFamily.Serif,
+                    color = Color.White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                // Substring sample body
-                Text(
-                    text = article.content,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    lineHeight = 20.sp
-                )
-                Spacer(modifier = Modifier.height(12.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "BY ${article.author.uppercase()} · ${article.readingTimeMinutes} MINS READ",
+                        text = "BY ${article.author.uppercase()}",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color.White.copy(alpha = 0.6f),
                         fontWeight = FontWeight.Bold
                     )
-                    
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Filled.Info,
-                            contentDescription = "Views",
-                            modifier = Modifier.size(14.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "${article.views}",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                    Box(
+                        modifier = Modifier
+                            .size(3.dp)
+                            .background(Color.White.copy(alpha = 0.4f), CircleShape)
+                    )
+                    Text(
+                        text = "${article.readingTimeMinutes} MINS READ",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White.copy(alpha = 0.6f),
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
@@ -657,79 +689,115 @@ fun BreakingNewsHeroCard(article: NewsArticle, onClick: (NewsArticle) -> Unit) {
 
 @Composable
 fun FeedNewsItemRow(article: NewsArticle, onClick: (NewsArticle) -> Unit) {
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp)
+            .clip(RoundedCornerShape(16.dp)) // rounded-2xl
+            .background(Color(0x0DFFFFFF)) // bg-white/5 Translucent Glass
+            .border(width = 1.dp, color = Color(0x0DFFFFFF), shape = RoundedCornerShape(16.dp)) // border-white/5
             .clickable { onClick(article) }
-            .padding(16.dp)
-            .testTag("news_item_row_${article.id}"),
-        verticalAlignment = Alignment.Top
+            .padding(14.dp)
+            .testTag("news_item_row_${article.id}")
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = article.category.uppercase(),
+                        color = Color(0xFFD32F2F), // Brand Red
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Black,
+                        fontSize = 10.sp,
+                        letterSpacing = 0.75.sp
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(3.dp)
+                            .background(Color.White.copy(alpha = 0.2f), CircleShape)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "${article.readingTimeMinutes} MIN READ",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White.copy(alpha = 0.4f),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 9.sp
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = article.category.uppercase(),
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 0.5.sp
+                    text = article.title,
+                    style = MaterialTheme.typography.bodyLarge, // Clean humanist sans title
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    lineHeight = 20.sp
                 )
-                Spacer(modifier = Modifier.width(6.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        text = "BY ${article.author.uppercase()}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White.copy(alpha = 0.5f),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 9.sp
+                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Filled.Info,
+                            contentDescription = "Read count",
+                            modifier = Modifier.size(11.dp),
+                            tint = Color.White.copy(alpha = 0.4f)
+                        )
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Text(
+                            text = "${article.views}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color.White.copy(alpha = 0.4f),
+                            fontSize = 9.sp
+                        )
+                    }
+                }
+            }
+            
+            if (article.imageUrl != null) {
+                Spacer(modifier = Modifier.width(16.dp))
+                AsyncImage(
+                    model = article.imageUrl,
+                    contentDescription = article.title,
+                    modifier = Modifier
+                        .size(68.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Spacer(modifier = Modifier.width(16.dp))
+                // Beautiful placeholder matching the play circle / article icon layout in the HTML spec
                 Box(
                     modifier = Modifier
-                        .size(3.dp)
-                        .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f), CircleShape)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = "${article.readingTimeMinutes}m read",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                        .size(68.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.White.copy(alpha = 0.08f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.PlayArrow,
+                        contentDescription = "Playback Icon Placeholder",
+                        tint = Color.White.copy(alpha = 0.2f),
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(
-                text = article.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "By ${article.author}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Icon(
-                    Icons.Filled.Info,
-                    contentDescription = "Read count",
-                    modifier = Modifier.size(12.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                )
-                Spacer(modifier = Modifier.width(3.dp))
-                Text(
-                    text = "${article.views}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                )
-            }
-        }
-        
-        if (article.imageUrl != null) {
-            Spacer(modifier = Modifier.width(16.dp))
-            AsyncImage(
-                model = article.imageUrl,
-                contentDescription = article.title,
-                modifier = Modifier
-                    .size(90.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
         }
     }
 }
@@ -751,14 +819,27 @@ fun DetailScreen(
     var isSpeaking by remember { mutableStateOf(false) }
 
     DisposableEffect(context) {
-        tts = TextToSpeech(context) { status ->
-            if (status != TextToSpeech.ERROR) {
-                tts?.language = Locale.ENGLISH
+        try {
+            tts = TextToSpeech(context) { status ->
+                if (status != TextToSpeech.ERROR) {
+                    try {
+                        tts?.language = Locale.ENGLISH
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            tts = null
         }
         onDispose {
-            tts?.stop()
-            tts?.shutdown()
+            try {
+                tts?.stop()
+                tts?.shutdown()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -767,7 +848,7 @@ fun DetailScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
+                    .background(MaterialTheme.colorScheme.background)
                     .statusBarsPadding()
                     .padding(horizontal = 8.dp, vertical = 6.dp)
             ) {
@@ -783,13 +864,18 @@ fun DetailScreen(
                         // TTS Speak trigger
                         IconButton(
                             onClick = {
-                                if (isSpeaking) {
-                                    tts?.stop()
+                                try {
+                                    if (isSpeaking) {
+                                        tts?.stop()
+                                        isSpeaking = false
+                                    } else {
+                                        val textToRead = "${article.title}. Published by ${article.author}. Content: ${article.content}"
+                                        tts?.speak(textToRead, TextToSpeech.QUEUE_FLUSH, null, "news_speech")
+                                        isSpeaking = true
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
                                     isSpeaking = false
-                                } else {
-                                    val textToRead = "${article.title}. Published by ${article.author}. Content: ${article.content}"
-                                    tts?.speak(textToRead, TextToSpeech.QUEUE_FLUSH, null, "news_speech")
-                                    isSpeaking = true
                                 }
                             }
                         ) {

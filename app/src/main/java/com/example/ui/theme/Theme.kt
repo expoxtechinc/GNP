@@ -20,18 +20,18 @@ private val DarkColorScheme = darkColorScheme(
     onSurfaceVariant = DarkTextSecondary
 )
 
-private val LightColorScheme = lightColorScheme(
+private val LightColorScheme = darkColorScheme( // Also use dark layout for uncompromised Sophisticated Dark vibe
     primary = NewsPrimary,
     onPrimary = androidx.compose.ui.graphics.Color.White,
     secondary = NewsSecondary,
-    onSecondary = LightTextPrimary,
+    onSecondary = DarkTextPrimary,
     tertiary = AccentGold,
-    background = LightBackground,
-    surface = LightSurface,
-    onBackground = LightTextPrimary,
-    onSurface = LightTextPrimary,
-    surfaceVariant = LightSurfaceVariant,
-    onSurfaceVariant = LightTextSecondary
+    background = DarkBackground,
+    surface = DarkSurface,
+    onBackground = DarkTextPrimary,
+    onSurface = DarkTextPrimary,
+    surfaceVariant = DarkSurfaceVariant,
+    onSurfaceVariant = DarkTextSecondary
 )
 
 @Composable
