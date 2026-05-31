@@ -1,0 +1,6 @@
+{
+  "name": "Global News Pro",
+  "description": "Ad-free, real-time personalized global news alerts, bookmarking, and premium admin publishing dashboard with analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
